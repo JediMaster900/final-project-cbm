@@ -2,93 +2,95 @@ const helper = require('./helper.js');
 const React = require('react');
 const ReactDOM = require('react-dom');
 
-const handleDomo = (e) => {
+const handleBit = (e) => {
     e.preventDefault();
     helper.hideError();
 
-    const name = e.target.querySelector('#domoName').value;
-    const age = e.target.querySelector('#domoAge').value;
-    const level = e.target.querySelector('#domoLevel').value;
+    const name = e.target.querySelector('#bitName').value;
+    const message = e.target.querySelector('#bitMessage').value;
+    const likes = e.target.querySelector('#bitLikes').value;
+    const rebits = e.target.querySelector('#bitRebits').value;
+    const date = e.target.querySelector('#bitDate').value;
 
-    if(!name || !age || !level) {
-        helper.handleError('All fields are required!');
+    if(!message) {
+        helper.handleError('A message is required!');
         return false;
     }
 
-    helper.sendPost(e.target.action, {name, age, level}, loadDomosFromServer);
+    helper.sendPost(e.target.action, {name, message, likes, rebits}, loadBitsFromServer);
 
     return false;
 }
 
-const DomoForm = (props) => {
+const BitForm = (props) => {
     return (
         <form
-            onSubmit={handleDomo}
-            name="domoForm"
+            onSubmit={handleBit}
+            name="bitForm"
             action="maker"
             method="POST"
-            className="domoForm"
+            className="bitForm"
         >
             <label htmlFor="name">Name: </label>
-            <input id="domoName" type="text" name="name" placeholder="Domo Name" />
-            <label htmlFor="age">Age: </label>
-            <input id="domoAge" type="number" min="0" name="age" />
-            <label htmlFor="level">Level: </label>
-            <input id="domoLevel" type="number" min="1" name="level" />
-            <input className="makeDomoSubmit" type="submit" value="Make Domo" />
+            <input id="bitName" type="text" name="name" placeholder="Bit Name" />
+            <label htmlFor="message">Message: </label>
+            <input id="bitMessage" type="text" min="0" name="message" />
+            <input className="makeBitSubmit" type="submit" value="Make Bit" />
 
         </form>
     );
 }
 
-const DomoList = (props) => {
-    if(props.domos.length === 0) {
+const BitList = (props) => {
+    if(props.bits.length === 0) {
         return (
-            <div className="domoList">
-                <h3 className="emptyDomo">No Domos Yet!</h3>
+            <div className="bitList">
+                <h3 className="emptyBit">No Bits Yet!</h3>
             </div>
         );
     }
 
-    const domoNodes = props.domos.map(domo => {
+    const bitNodes = props.bits.map(bit => {
         return (
-            <div key={domo._id} className="domo">
-                <img src="/assets/img/domoface.jpeg" alt="domo face" className="domoFace" />
-                <h3 className="domoName"> Name: {domo.name} </h3>
-                <h3 className="domoAge"> Age: {domo.age} </h3>
-                <h3 className="domoLevel"> Level: {domo.level} </h3>
+            <div key={bit._id} className="bit">
+                <img src="/assets/img/domoface.jpeg" alt="bit face" className="bitFace" />
+                <h3 className="bitName"> Name: {bit.name} </h3>
+                <h3 className="bitMessage"> Message: {bit.message} </h3>
+                <h3 className="bitLikes"> Likes: {bit.likes} </h3>
+                <h3 className="bitRebits"> Rebits: {bit.rebits} </h3>
+                <h3 className="bitDate"> Date: {bit.date} </h3>
             </div>
         );
     });
 
     return (
-        <div className="domoList">
-            {domoNodes}
+        <div className="bitList">
+            {bitNodes}
         </div>
     );
 }
 
-const loadDomosFromServer = async () => {
-    const response = await fetch('/getDomos');
+const loadBitsFromServer = async () => {
+    const response = await fetch('/getBits');
     const data = await response.json();
     ReactDOM.render(
-        <DomoList domos={data.domos} />,
-        document.getElementById('domos')
+        <BitList bits={data.bits} />,
+        document.getElementById('bits')
     );
 }
 
 const init = () => {
     ReactDOM.render(
-        <DomoForm />,
-        document.getElementById('makeDomo')
+        <BitForm />,
+        document.getElementById('makeBit')
     );
 
     ReactDOM.render(
-        <DomoList domos={[]} />,
-        document.getElementById('domos')
+        <BitList bits={[]} />,
+        document.getElementById('bits')
     );
 
-    loadDomosFromServer();
+    loadBitsFromServer();
 }
 
 window.onload = init;

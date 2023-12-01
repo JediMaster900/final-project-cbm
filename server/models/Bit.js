@@ -3,21 +3,26 @@ const _ = require('underscore');
 
 const setName = (name) => _.escape(name).trim();
 
-const DomoSchema = new mongoose.Schema({
+const BitSchema = new mongoose.Schema({
   name: {
     type: String,
     require: true,
     trim: true,
     set: setName,
   },
-  age: {
+  message: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  likes: {
     type: Number,
     min: 0,
     required: true,
   },
-  level: {
+  rebits: {
     type: Number,
-    min: 1,
+    min: 0,
     required: true,
   },
   owner: {
@@ -31,11 +36,11 @@ const DomoSchema = new mongoose.Schema({
   },
 });
 
-DomoSchema.statics.toAPI = (doc) => ({
+BitSchema.statics.toAPI = (doc) => ({
   name: doc.name,
-  age: doc.age,
-  level: doc.level,
+  likes: doc.likes,
+  rebits: doc.rebits,
 });
 
-const DomoModel = mongoose.model('Domo', DomoSchema);
-module.exports = DomoModel;
+const BitModel = mongoose.model('Bit', BitSchema);
+module.exports = BitModel;
