@@ -21,7 +21,9 @@ const makeBit = async (req, res) => {
   try {
     const newBit = new Bit(bitData);
     await newBit.save();
-    return res.status(201).json({ name: newBit.name, message: newBit.message, date: newBit.message });
+    return res.status(201).json({ 
+      name: newBit.name, message: newBit.message, date: newBit.message 
+    });
   } catch (err) {
     console.log(err);
     if (err.code === 11000) {
