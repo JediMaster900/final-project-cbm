@@ -3,7 +3,7 @@ const _ = require('underscore');
 
 const setName = (name) => _.escape(name).trim();
 
-const BitSchema = new mongoose.Schema({
+let BitSchema = new mongoose.Schema({
   name: {
     type: String,
     require: true,
@@ -18,11 +18,13 @@ const BitSchema = new mongoose.Schema({
   likes: {
     type: Number,
     min: 0,
+    default: 0,
     required: true,
   },
   rebits: {
     type: Number,
     min: 0,
+    default: 0,
     required: true,
   },
   owner: {
@@ -34,13 +36,20 @@ const BitSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  whoLiked: {
+    type: [mongoose.Schema.ObjectId],
+    required: false,
+  },
 });
 
 BitSchema.statics.toAPI = (doc) => ({
   name: doc.name,
+  message: doc.message,
   likes: doc.likes,
   rebits: doc.rebits,
+  createdDate: doc.createdDate,
+  owner: doc.owner
 });
 
-const BitModel = mongoose.model('Bit', BitSchema);
+let BitModel = mongoose.model('Bit', BitSchema);
 module.exports = BitModel;

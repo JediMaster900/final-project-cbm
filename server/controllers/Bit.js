@@ -1,16 +1,17 @@
 const models = require('../models');
+const mongoose = require('mongoose');
 
 const { Bit } = models;
 
 const makerPage = async (req, res) => res.render('app');
 
 const makeBit = async (req, res) => {
-  if (!req.body.name || !req.body.message) {
-    return res.status(400).json({ error: 'Name and message are required!' });
+  if (!req.body.message) {
+    return res.status(400).json({ error: 'A message is required!' });
   }
 
-  const bitData = {
-    name: req.body.name,
+  let bitData = {
+    name: req.session.account.username,
     message: req.body.message,
     likes: req.body.likes,
     rebits: req.body.rebits,
@@ -19,7 +20,7 @@ const makeBit = async (req, res) => {
   };
 
   try {
-    const newBit = new Bit(bitData);
+    let newBit = new Bit(bitData);
     await newBit.save();
     return res.status(201).json({ 
       name: newBit.name, message: newBit.message, date: newBit.message 
@@ -35,8 +36,8 @@ const makeBit = async (req, res) => {
 
 const getBits = async (req, res) => {
   try {
-    const query = { owner: req.session.account._id };
-    const docs = await Bit.find(query).select('name message likes rebits owner date').lean().exec();
+    //const query = { owner: req.session.account._id };
+    const docs = await Bit.find().select('name message likes rebits owner createdDate').sort('-createdDate').lean().exec();
 
     return res.json({ bits: docs });
   } catch (err) {
@@ -45,8 +46,36 @@ const getBits = async (req, res) => {
   }
 };
 
+const likeBit = async (req, res) => {
+  try {
+    bitId = req.body._id;
+    console.log(req.session.account._id);
+
+    const docs = await Bit.findByIdAndUpdate(bitId, {$inc: {likes: 1}});
+    await Bit.findByIdAndUpdate(bitId, {$push: {whoLiked: req.session.account._id}});
+
+    return res.json({ liked: docs });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: 'Error liking bit!' });
+  }
+};
+
+const reBit = async (req, res) => {
+  try{
+    const docs = await Bit.findByIdAndUpdate(req.body._id, {$inc: {rebits: 1}});
+
+    return res.json({ rebited: docs });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: 'Error rebiting bit!' });
+  }
+};
+
 module.exports = {
   makerPage,
   makeBit,
   getBits,
+  likeBit,
+  reBit,
 };

@@ -91,10 +91,20 @@ const changePass = (req, res) => {
   });
 };
 
+const isPremium = async (req, res) => {
+  try{
+    await Account.findByIdAndUpdate(req.session.account._id, { premium: !this.premium });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ error: 'Error swapping premium status!' });
+  }
+};
+
 module.exports = {
   loginPage,
   login,
   logout,
   signup,
   changePass,
+  isPremium,
 };

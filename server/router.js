@@ -15,6 +15,10 @@ const router = (app) => {
 
   app.get('/maker', mid.requiresLogin, controllers.Bit.makerPage);
   app.post('/maker', mid.requiresLogin, controllers.Bit.makeBit);
+  app.post('/like', mid.requiresLogin, controllers.Bit.likeBit);
+  app.post('/rebit', mid.requiresLogin, controllers.Bit.reBit);
+  app.post('/premium', mid.requiresLogin, controllers.Account.isPremium);
+
 
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
 };

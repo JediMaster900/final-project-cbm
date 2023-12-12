@@ -4,6 +4,7 @@
 */
 const handleError = (message) => {
     document.getElementById('errorMessage').textContent = message;
+    document.getElementById('errorMessage').classList.remove('hidden');
     document.getElementById('bitMessage').classList.remove('hidden');
 };
   
@@ -21,6 +22,7 @@ const sendPost = async (url, data, handler) => {
 
     const result = await response.json();
     document.getElementById('bitMessage').classList.add('hidden');
+    document.getElementById('errorMessage').classList.add('hidden');
 
     if(result.redirect) {
         window.location = result.redirect;
@@ -37,6 +39,7 @@ const sendPost = async (url, data, handler) => {
 
 const hideError = () => {
     document.getElementById('bitMessage').classList.add('hidden');
+    document.getElementById('errorMessage').classList.add('hidden');
 };
 
 module.exports = {
