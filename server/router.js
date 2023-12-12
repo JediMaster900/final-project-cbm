@@ -19,7 +19,6 @@ const router = (app) => {
   app.post('/rebit', mid.requiresLogin, controllers.Bit.reBit);
   app.post('/premium', mid.requiresLogin, controllers.Account.isPremium);
 
-
   app.get('/', mid.requiresSecure, mid.requiresLogout, controllers.Account.loginPage);
 };
 

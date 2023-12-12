@@ -1,5 +1,4 @@
 const models = require('../models');
-const mongoose = require('mongoose');
 
 const { Bit } = models;
 
@@ -10,7 +9,7 @@ const makeBit = async (req, res) => {
     return res.status(400).json({ error: 'A message is required!' });
   }
 
-  let bitData = {
+  const bitData = {
     name: req.session.account.username,
     message: req.body.message,
     likes: req.body.likes,
@@ -20,10 +19,10 @@ const makeBit = async (req, res) => {
   };
 
   try {
-    let newBit = new Bit(bitData);
+    const newBit = new Bit(bitData);
     await newBit.save();
-    return res.status(201).json({ 
-      name: newBit.name, message: newBit.message, date: newBit.message 
+    return res.status(201).json({
+      name: newBit.name, message: newBit.message, date: newBit.message,
     });
   } catch (err) {
     console.log(err);
@@ -36,8 +35,9 @@ const makeBit = async (req, res) => {
 
 const getBits = async (req, res) => {
   try {
-    //const query = { owner: req.session.account._id };
-    const docs = await Bit.find().select('name message likes rebits owner createdDate').sort('-createdDate').lean().exec();
+    // const query = { owner: req.session.account._id };
+    const docs = await Bit.find().select('name message likes rebits owner createdDate').sort('-createdDate').lean()
+      .exec();
 
     return res.json({ bits: docs });
   } catch (err) {
@@ -48,11 +48,11 @@ const getBits = async (req, res) => {
 
 const likeBit = async (req, res) => {
   try {
-    bitId = req.body._id;
+    const bitId = req.body._id;
     console.log(req.session.account._id);
 
-    const docs = await Bit.findByIdAndUpdate(bitId, {$inc: {likes: 1}});
-    await Bit.findByIdAndUpdate(bitId, {$push: {whoLiked: req.session.account._id}});
+    const docs = await Bit.findByIdAndUpdate(bitId, { $inc: { likes: 1 } });
+    await Bit.findByIdAndUpdate(bitId, { $push: { whoLiked: req.session.account._id } });
 
     return res.json({ liked: docs });
   } catch (err) {
@@ -62,8 +62,8 @@ const likeBit = async (req, res) => {
 };
 
 const reBit = async (req, res) => {
-  try{
-    const docs = await Bit.findByIdAndUpdate(req.body._id, {$inc: {rebits: 1}});
+  try {
+    const docs = await Bit.findByIdAndUpdate(req.body._id, { $inc: { rebits: 1 } });
 
     return res.json({ rebited: docs });
   } catch (err) {

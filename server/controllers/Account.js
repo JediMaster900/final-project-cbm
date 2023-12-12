@@ -92,8 +92,9 @@ const changePass = (req, res) => {
 };
 
 const isPremium = async (req, res) => {
-  try{
+  try {
     await Account.findByIdAndUpdate(req.session.account._id, { premium: !this.premium });
+    return res.status(200).json();
   } catch (err) {
     console.log(err);
     return res.status(500).json({ error: 'Error swapping premium status!' });
